@@ -45,7 +45,7 @@ command: simple_command
         ;
 
 simple_command:	
-	command_and_args iomodifier_opt NEWLINE {
+	piped_command iomodifier_opt NEWLINE {
 		printf("   Yacc: Execute command\n");
 		Command::_currentCommand.execute();
 	}
@@ -55,6 +55,11 @@ simple_command:
 	// 	Command::_currentCommand.prompt();
 	// }
 	| error NEWLINE { yyerrok; }
+	;
+
+piped_command:
+	piped_command PIPE command_and_args
+	| command_and_args
 	;
 
 command_and_args:

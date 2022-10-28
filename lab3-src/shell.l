@@ -26,14 +26,12 @@
 
 ">" 	{
 		return GREAT;
-		}
-
-"<" 	{
-		return LESS;
-		}
-">>"	{
-		return APPEND;
-		}
+	}
+	
+.	{
+		/* Invalid character in input */
+		return NOTOKEN;
+	}
 
 [^ \t\n][^ \t\n]*  {
 		/* Assume that file names have only alpha chars */
@@ -41,10 +39,7 @@
 		return WORD;
 	}
 
-.	{
-		/* Invalid character in input */
-		return NOTOKEN;
-	}
+
 
 %%
 	

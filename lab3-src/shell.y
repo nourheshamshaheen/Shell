@@ -13,7 +13,7 @@
 
 %token	<string_val> WORD
 
-%token 	NOTOKEN GREAT LESS NEWLINE 
+%token 	NOTOKEN GREAT NEWLINE 
 
 %union	{
 		char   *string_val;
@@ -90,20 +90,6 @@ iomodifier_opt:
 	| /* can be empty */ 
 	;
 
-iomodifier_opt:
-	LESS WORD {
-		printf("   Yacc: insert input \"%s\"\n", $2);
-		Command::_currentCommand._inputFile = $2;
-	}
-	|
-	;
-iomodifier_opt:
-	APPEND WORD {
-		printf("   Yacc: insert output \"%s\"\n", $2);
-		Command::_currentCommand._outFile = $2;
-	}
-	|
-	;
 %%
 
 void

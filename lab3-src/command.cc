@@ -57,6 +57,7 @@ Command::Command()
 	_inputFile = 0;
 	_errFile = 0;
 	_background = 0;
+	_appendFlag = 0;
 }
 
 void

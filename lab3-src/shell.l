@@ -27,7 +27,18 @@
 ">" 	{
 		return GREAT;
 	}
-	
+"<" 	{
+		return LESS;
+	}
+">>" 	{
+		return APPEND;
+	}
+"|" 	{
+		return PIPE;
+	}
+"&" 	{
+		return AMPERSAND;
+}
 .	{
 		/* Invalid character in input */
 		return NOTOKEN;
@@ -38,6 +49,7 @@
 		yylval.string_val = strdup(yytext);
 		return WORD;
 	}
+
 
 
 

@@ -13,7 +13,7 @@
 
 %token	<string_val> WORD
 
-%token 	NOTOKEN GREAT NEWLINE 
+%token 	NOTOKEN GREAT NEWLINE LESS AMPERSAND APPEND PIPE
 
 %union	{
 		char   *string_val;
@@ -49,7 +49,11 @@ simple_command:
 		printf("   Yacc: Execute command\n");
 		Command::_currentCommand.execute();
 	}
-	| NEWLINE 
+	/* Here, we wanted that each time we pressed enter, a new prompt got printed */
+	| NEWLINE
+	// {
+	// 	Command::_currentCommand.prompt();
+	// }
 	| error NEWLINE { yyerrok; }
 	;
 
@@ -86,9 +90,21 @@ iomodifier_opt:
 	GREAT WORD {
 		printf("   Yacc: insert output \"%s\"\n", $2);
 		Command::_currentCommand._outFile = $2;
+		Command::_currentCommand._appendFlag = 0;
+
 	}
-	| /* can be empty */ 
+	| APPEND WORD {
+		printf("   Yacc: insert output \"%s\"\n", $2);
+		Command::_currentCommand._outFile = $2;
+		Command::_currentCommand._appendFlag = 1;
+	}
+	| LESS WORD {
+		printf("   Yacc: insert input \"%s\"\n", $2);
+		Command::_currentCommand._inputFile = $2;
+
+	}
 	;
+
 
 %%
 

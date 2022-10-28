@@ -5,6 +5,10 @@
 #define NOTOKEN 258
 #define GREAT 259
 #define NEWLINE 260
+#define LESS 261
+#define AMPERSAND 262
+#define APPEND 263
+#define PIPE 264
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1

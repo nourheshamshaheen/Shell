@@ -81,67 +81,76 @@ extern int YYPARSE_DECL();
 #define NOTOKEN 258
 #define GREAT 259
 #define NEWLINE 260
+#define LESS 261
+#define AMPERSAND 262
+#define APPEND 263
+#define PIPE 264
 #define YYERRCODE 256
 typedef int YYINT;
 static const YYINT yylhs[] = {                           -1,
     0,    1,    1,    2,    3,    3,    3,    4,    7,    7,
-    8,    6,    5,    5,
+    8,    6,    5,    5,    5,
 };
 static const YYINT yylen[] = {                            2,
     1,    1,    2,    1,    3,    1,    2,    2,    2,    0,
-    1,    1,    2,    0,
+    1,    1,    2,    2,    2,
 };
 static const YYINT yydefred[] = {                         0,
     0,   12,    6,    0,    0,    2,    4,    0,   10,    7,
-    3,    0,    0,    0,   13,    5,   11,    9,
+    3,    0,    0,    0,    0,    0,   13,   15,   14,    5,
+   11,    9,
 };
 #if defined(YYDESTRUCT_CALL) || defined(YYSTYPE_TOSTRING)
 static const YYINT yystos[] = {                           0,
-  256,  257,  260,  262,  263,  264,  265,  266,  268,  260,
-  264,  259,  267,  269,  257,  260,  257,  270,
+  256,  257,  260,  266,  267,  268,  269,  270,  272,  260,
+  268,  259,  261,  263,  271,  273,  257,  257,  257,  260,
+  257,  274,
 };
 #endif /* YYDESTRUCT_CALL || YYSTYPE_TOSTRING */
 static const YYINT yydgoto[] = {                          4,
-    5,    6,    7,    8,   13,    9,   14,   18,
+    5,    6,    7,    8,   15,    9,   16,   22,
 };
 static const YYINT yysindex[] = {                      -256,
- -255,    0,    0,    0, -256,    0,    0, -253,    0,    0,
-    0, -250, -252, -248,    0,    0,    0,    0,
+ -258,    0,    0,    0, -256,    0,    0, -254,    0,    0,
+    0, -246, -245, -244, -257, -243,    0,    0,    0,    0,
+    0,    0,
 };
 static const YYINT yyrindex[] = {                         0,
-    0,    0,    0,    0,   10,    0,    0, -249,    0,    0,
-    0,    0,    0, -257,    0,    0,    0,    0,
+    0,    0,    0,    0,   15,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0, -253,    0,    0,    0,    0,
+    0,    0,
 };
 #if YYBTYACC
 static const YYINT yycindex[] = {                         0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,
 };
 #endif
 static const YYINT yygindex[] = {                         0,
-    0,    7,    0,    0,    0,    0,    0,    0,
+    0,   11,    0,    0,    0,    0,    0,    0,
 };
-#define YYTABLESIZE 12
+#define YYTABLESIZE 16
 static const YYINT yytable[] = {                          1,
-    2,    8,    8,    3,   10,   12,   15,   16,   17,    1,
-   14,   11,
+    2,   10,   20,    3,   12,    8,   13,    8,   14,    8,
+   17,   18,   19,   21,    1,   11,
 };
 static const YYINT yycheck[] = {                        256,
-  257,  259,  260,  260,  260,  259,  257,  260,  257,    0,
-  260,    5,
+  257,  260,  260,  260,  259,  259,  261,  261,  263,  263,
+  257,  257,  257,  257,    0,    5,
 };
 #if YYBTYACC
 static const YYINT yyctable[] = {                        -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,
+   -1,   -1,   -1,   -1,   -1,
 };
 #endif
 #define YYFINAL 4
 #ifndef YYDEBUG
 #define YYDEBUG 0
 #endif
-#define YYMAXTOKEN 260
-#define YYUNDFTOKEN 271
+#define YYMAXTOKEN 264
+#define YYUNDFTOKEN 275
 #define YYTRANSLATE(a) ((a) > YYMAXTOKEN ? YYUNDFTOKEN : (a))
 #if YYDEBUG
 static const char *const yyname[] = {
@@ -153,9 +162,9 @@ static const char *const yyname[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"error","WORD","NOTOKEN","GREAT",
-"NEWLINE","$accept","goal","commands","command","simple_command",
-"command_and_args","iomodifier_opt","command_word","arg_list","argument",
-"illegal-symbol",
+"NEWLINE","LESS","AMPERSAND","APPEND","PIPE","$accept","goal","commands",
+"command","simple_command","command_and_args","iomodifier_opt","command_word",
+"arg_list","argument","illegal-symbol",
 };
 static const char *const yyrule[] = {
 "$accept : goal",
@@ -172,7 +181,8 @@ static const char *const yyrule[] = {
 "argument : WORD",
 "command_word : WORD",
 "iomodifier_opt : GREAT WORD",
-"iomodifier_opt :",
+"iomodifier_opt : APPEND WORD",
+"iomodifier_opt : LESS WORD",
 
 };
 #endif
@@ -304,7 +314,7 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 94 "shell.y"
+#line 110 "shell.y"
 
 void
 yyerror(const char * s)
@@ -318,7 +328,7 @@ main()
 	yyparse();
 }
 #endif
-#line 322 "y.tab.c"
+#line 332 "y.tab.c"
 
 /* For use in generated program */
 #define yydepth (int)(yystack.s_mark - yystack.s_base)
@@ -994,49 +1004,69 @@ case 5:
 		printf("   Yacc: Execute command\n");
 		Command::_currentCommand.execute();
 	}
-#line 998 "y.tab.c"
+#line 1008 "y.tab.c"
 break;
 case 7:
-#line 53 "shell.y"
+#line 57 "shell.y"
 	{ yyerrok; }
-#line 1003 "y.tab.c"
+#line 1013 "y.tab.c"
 break;
 case 8:
-#line 57 "shell.y"
+#line 61 "shell.y"
 	{
 		Command::_currentCommand.
 			insertSimpleCommand( Command::_currentSimpleCommand );
 	}
-#line 1011 "y.tab.c"
+#line 1021 "y.tab.c"
 break;
 case 11:
-#line 69 "shell.y"
+#line 73 "shell.y"
 	{
                printf("   Yacc: insert argument \"%s\"\n", yystack.l_mark[0].string_val);
 
 	       Command::_currentSimpleCommand->insertArgument( yystack.l_mark[0].string_val );\
 	}
-#line 1020 "y.tab.c"
+#line 1030 "y.tab.c"
 break;
 case 12:
-#line 77 "shell.y"
+#line 81 "shell.y"
 	{
                printf("   Yacc: insert command \"%s\"\n", yystack.l_mark[0].string_val);
 	       
 	       Command::_currentSimpleCommand = new SimpleCommand();
 	       Command::_currentSimpleCommand->insertArgument( yystack.l_mark[0].string_val );
 	}
-#line 1030 "y.tab.c"
+#line 1040 "y.tab.c"
 break;
 case 13:
-#line 86 "shell.y"
+#line 90 "shell.y"
 	{
 		printf("   Yacc: insert output \"%s\"\n", yystack.l_mark[0].string_val);
 		Command::_currentCommand._outFile = yystack.l_mark[0].string_val;
+		/* Command::_currentCommand._appendFlag = 0;*/
+
 	}
-#line 1038 "y.tab.c"
+#line 1050 "y.tab.c"
 break;
-#line 1040 "y.tab.c"
+case 14:
+#line 96 "shell.y"
+	{
+		printf("   Yacc: insert output \"%s\"\n", yystack.l_mark[0].string_val);
+		Command::_currentCommand._outFile = yystack.l_mark[0].string_val;
+		/* Command::_currentCommand._appendFlag = 1;*/
+	}
+#line 1059 "y.tab.c"
+break;
+case 15:
+#line 101 "shell.y"
+	{
+		printf("   Yacc: insert input \"%s\"\n", yystack.l_mark[0].string_val);
+		/* Command::_currentCommand._inputFile = $2;*/
+
+	}
+#line 1068 "y.tab.c"
+break;
+#line 1070 "y.tab.c"
     default:
         break;
     }

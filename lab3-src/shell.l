@@ -26,7 +26,14 @@
 
 ">" 	{
 		return GREAT;
-	}
+		}
+
+"<" 	{
+		return LESS;
+		}
+">>"	{
+		return APPEND;
+		}
 
 [^ \t\n][^ \t\n]*  {
 		/* Assume that file names have only alpha chars */

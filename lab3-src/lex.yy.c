@@ -779,7 +779,7 @@ case 7:
 YY_RULE_SETUP
 #line 39 "shell.l"
 {
-		return AMPERSAND;
+		return AMPS;
 }
 	YY_BREAK
 case 8:

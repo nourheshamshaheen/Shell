@@ -37,7 +37,7 @@
 		return PIPE;
 	}
 "&" 	{
-		return AMPERSAND;
+		return AMPS;
 }
 .	{
 		/* Invalid character in input */

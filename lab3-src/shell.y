@@ -13,7 +13,7 @@
 
 %token	<string_val> WORD
 
-%token 	NOTOKEN GREAT NEWLINE LESS AMPERSAND APPEND PIPE
+%token 	NOTOKEN GREAT NEWLINE LESS AMPS APPEND PIPE
 
 %union	{
 		char   *string_val;
@@ -45,7 +45,7 @@ command: simple_command
         ;
 
 simple_command:	
-	piped_command iomodifier_opt NEWLINE {
+	piped_command iomodifier_opt_list NEWLINE {
 		printf("   Yacc: Execute command\n");
 		Command::_currentCommand.execute();
 	}
@@ -96,6 +96,13 @@ command_word:
 	}
 	;
 
+iomodifier_opt_list:
+	iomodifier_opt_list iomodifier_opt
+	|
+	iomodifier_opt
+	|
+	;
+
 iomodifier_opt:
 	GREAT WORD {
 		printf("   Yacc: insert output \"%s\"\n", $2);
@@ -111,6 +118,11 @@ iomodifier_opt:
 	| LESS WORD {
 		printf("   Yacc: insert input \"%s\"\n", $2);
 		Command::_currentCommand._inputFile = $2;
+
+	}
+	| AMPS {
+		printf("   Yacc: running in background.\n");
+		Command::_currentCommand._background = true;
 
 	}
 	|

@@ -1,6 +1,3 @@
-#ifndef _yy_defines_h_
-#define _yy_defines_h_
-
 #define WORD 257
 #define NOTOKEN 258
 #define GREAT 259
@@ -15,10 +12,8 @@
 #endif
 #ifndef YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
-typedef union YYSTYPE	{
+typedef union	{
 		char   *string_val;
 	} YYSTYPE;
 #endif /* !YYSTYPE_IS_DECLARED */
 extern YYSTYPE yylval;
-
-#endif /* _yy_defines_h_ */

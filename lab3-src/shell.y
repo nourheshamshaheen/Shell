@@ -79,7 +79,12 @@ argument:
 
 command_word:
 	WORD {
-               printf("   Yacc: insert command \"%s\"\n", $1);
+		// Here, we implement our exit function
+			if (strcmp($1, "exit") == 0) {
+				printf("You are now exiting Nour and Lara's shell. Bye!\n");
+				exit(0);	
+			}
+			printf("   Yacc: insert command \"%s\"\n", $1);
 	       
 	       Command::_currentSimpleCommand = new SimpleCommand();
 	       Command::_currentSimpleCommand->insertArgument( $1 );
@@ -103,6 +108,7 @@ iomodifier_opt:
 		Command::_currentCommand._inputFile = $2;
 
 	}
+	|
 	;
 
 

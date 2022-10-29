@@ -189,21 +189,46 @@ Command::execute()
 	dup2(outfd,1);
 	dup2(defaulterr,2);
 
-	// Create child process
 	int pid;
-	pid = fork();
+	int n = sizeof(_simpleCommands)/sizeof(SimpleCommand*);
+	// Looping on simple commands, each: cmd + [args]* 
+	for (int i = 0; i < n; i++){
+		// If at the end
+		if(i == n - 1){
+			pid = fork();
+			if (pid==0){
+				int num_args = _simpleCommands[i]->_numberOfArguments;
+				char ** args = _simpleCommands[i]->_arguments;
+				char ** full_command = (char **) realloc(args,(num_args + 1) * sizeof(char*));
+				full_command[num_args] = NULL;
+				execvp(full_command[0],full_command);
+				_exit(1);
+			}
+		}
+		else{ // Else if we are still in the middle of commands
+		// Create child process
+			pid = fork();
+			if (pid == -1){
+				perror("There is an error. Process can't be created\n");
+				exit(2);
+			}
+			if (pid == 0){
+				
+				close(outfd);
+				close(infd);
+				close(defaultin);
+				close(defaultout);
+				close(defaulterr);
+				exit(0);
+			}
 
-	if (pid == -1){
-		perror("There is an error. Process can't be created\n");
-		exit(2);
-	}
-	if (pid == 0){
-		close(outfd);
-		close(infd);
-		close(defaultin);
-		close(defaultout);
-		close(defaulterr);
-		exit(0);
+		}	
+
+
+
+
+	
+
 	}
 
 	// dup2 takes first argument and puts it in second argument (opposite of dup)

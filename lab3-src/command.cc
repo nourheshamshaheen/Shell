@@ -157,7 +157,7 @@ Command::execute()
 	int org_outfd;
 
 	// Nour is debugging here
-	//int err = open("err.txt", O_CREAT | O_TRUNC | O_WRONLY, 0666); 
+	// int err = open("err.txt", O_CREAT | O_TRUNC | O_WRONLY, 0666); 
 	/*
 	printf("Here is defaultin %d\n",defaultin);
 	printf("Here is defaultout %d\n",defaultout);

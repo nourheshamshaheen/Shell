@@ -154,7 +154,10 @@ Command::execute()
 	int defaulterr = dup( 2 );
 	int outfd;
 	int infd;
-	
+	int org_outfd;
+
+	// Nour is debugging here
+	//int err = open("err.txt", O_CREAT | O_TRUNC | O_WRONLY, 0666); 
 	/*
 	printf("Here is defaultin %d\n",defaultin);
 	printf("Here is defaultout %d\n",defaultout);
@@ -169,7 +172,7 @@ Command::execute()
 		// O_CREAT: if file doesn't exist create it
 		// O_APPEND: if file exists append to it
 		// O_WRONLY: write only
-		// printf("appended to a file\n");	
+		// printf("Appended to a file\n");	
 		}
 	else if(_outFile){
 		// create file descriptor for outfd to overwrite to
@@ -177,7 +180,7 @@ Command::execute()
 		// O_CREAT: if file doesn't exist create it
 		// O_TRUNC: if file exists delete what's in it
 		// O_WRONLY: write only
-		//printf("created a file\n");
+		//printf("Created a file\n");
 	}
 	else{
 		// if _outFile = 0, file descriptor remains the same
@@ -193,12 +196,7 @@ Command::execute()
 		infd = defaultin;
 	}
 
-	// Start redirecting the right file descriptors to stdin, stdout
-	
-	dup2(infd,0);
-	dup2(outfd,1);
-	dup2(defaulterr,2);
-
+	org_outfd = outfd;
 
 	/////////////////////////////////////////////////////
 
@@ -207,41 +205,63 @@ Command::execute()
 	/////////////////////////////////////////////////////
 
 	int pid;
-	int n = sizeof(_simpleCommands)/sizeof(SimpleCommand*);
+	int n = _numberOfSimpleCommands;
+
+	// Nour is debugging here
+	// dprintf(err, "Number of commands is %d\n", n);
+
 	// Looping on simple commands, each: cmd + [args]* 
 	for (int i = 0; i < n; i++){
-		// If at the end
-		if(i == n - 1){
-			pid = fork();
-			if (pid==0){
 
-				// We add an extra argument called NULL to the lists of argument
-				// This to make exevp work correcly
-				int num_args = _simpleCommands[i]->_numberOfArguments;
-				char ** args = _simpleCommands[i]->_arguments;
-				char ** full_command = (char **) realloc(args,(num_args + 1) * sizeof(char*));
-				full_command[num_args] = NULL;
-				execvp(full_command[0],full_command);
-				exit(1);
-			}
+		// Redirecting to file or piped command as input
+		dup2(infd, 0);
+
+		// Nour is debugging here
+		// dprintf(err, "IN OF COMMAND %d is %d\n", i, infd);
+
+		if (i == n -1 ){ // if we're at the last command
+			outfd = org_outfd;
 		}
-		else{ // Else if we are still in the middle of commands
-			// Create child process
-			// pid = fork();
-			// if (pid == -1){
-			// 	perror("There is an error. Process can't be created\n");
-			// 	exit(2);
-			// }
-			// if (pid == 0){
-				
-			// 	close(outfd);
-			// 	close(infd);
-			// 	close(defaultin);
-			// 	close(defaultout);
-			// 	close(defaulterr);
-			// 	exit(0);
-			// }
-		}	
+		else{ // If we're not at the last command, do a pipe
+			int fdpipe[2];
+			if(pipe(fdpipe) == -1){
+				perror("ERROR IN PIPING.");
+				exit(2);
+			}
+			outfd = fdpipe[1];
+			infd = fdpipe[0];
+		}
+		// Nour is debugging here
+		// dprintf(err, "OUT OF COMMAND %d is %d\n", i, outfd);
+
+		// Redirect to output
+		dup2(outfd, 1);
+		close(outfd);
+
+		// Create child
+		pid = fork();
+
+		if (pid == -1) {
+			perror("ERROR IN FORK.");
+			exit(2);
+		}
+		if (pid == 0){
+			// Close fds
+			close(outfd);
+			close(infd);
+			close(defaultin);
+			close(defaultout);
+			close(defaulterr);
+
+			// We add an extra argument called NULL to the lists of argument
+			// This to make exevp work correcly
+			int num_args = _simpleCommands[i]->_numberOfArguments;
+			char ** args = _simpleCommands[i]->_arguments;
+			char ** full_command = (char **) realloc(args,(num_args + 1) * sizeof(char*));
+			full_command[num_args] = NULL;
+			execvp(full_command[0],full_command);
+			exit(1);
+		}
 	} //endfor
 
 
@@ -249,8 +269,11 @@ Command::execute()
 	/////////////////////////////////////////////////////
 	////////// Handle File Redirection Contd. ///////////
 	/////////////////////////////////////////////////////
+
+
 	// Dup2 takes first argument and puts it in second argument (opposite of dup)
 	// Here, we return input to be stdin, output to be stdout, and error to be stderr
+	
 	dup2(defaultin,0);
 	dup2(defaultout,1);
 	dup2(defaulterr,2);
@@ -259,18 +282,15 @@ Command::execute()
 	close(defaultin);
 	close(defaultout);
 	close(defaulterr);
-	close(outfd);
 	close(infd);
-
-
-	////////////////////////////////////////////////////
-
+	close(outfd);
 
 	// Wait for child process to terminate
 	if (_background == false) {
-		//wait for last command
 		waitpid(pid, NULL, 0);
 	}
+
+	////////////////////////////////////////////////////
 
 	// Clear to prepare for next command
 	clear();
@@ -284,7 +304,7 @@ Command::execute()
 void
 Command::prompt()
 {
-	printf("myshell>");
+	printf("lano>");
 	fflush(stdout);
 }
 

@@ -16,6 +16,7 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <signal.h>
+#include <fcntl.h>
 
 #include "command.h"
 
@@ -118,6 +119,7 @@ Command::print()
 		for ( int j = 0; j < _simpleCommands[i]->_numberOfArguments; j++ ) {
 			printf("\"%s\" \t", _simpleCommands[i]->_arguments[ j ] );
 		}
+		printf("\n");
 	}
 
 	printf( "\n\n" );
@@ -138,14 +140,87 @@ Command::execute()
 		prompt();
 		return;
 	}
-
-	// Print contents of Command data structure
 	print();
+	// stem call creates a copy of a file descriptor.
+	// here, we take stdin(0) and put it in default in and so on.
+	int defaultin = dup( 0 );
+	int defaultout = dup( 1 );
+	int defaulterr = dup( 2 );
+	int outfd = 0;
+	int infd = 0;
+	printf("Here is defaultin %d\n",defaultin);
+	printf("Here is defaultout %d\n",defaultout);
+	printf("Here is defaulterr %d\n",defaulterr);
 
-	// Add execution here
-	// For every simple command fork a new process
-	// Setup i/o redirection
-	// and call exec
+	// setting the right file descriptors to redirect to
+
+	if (_outFile && _appendFlag){
+		// create file descriptor for outfd to append to
+		outfd = open(_outFile, O_CREAT | O_APPEND | O_WRONLY);
+		// O_CREAT: if file doesn't exist create it
+		// O_APPEND: if file exists append to it
+		// O_WRONLY: write only
+		// printf("appended to a file\n");	
+		}
+	else if(_outFile){
+		// create file descriptor for outfd to overwrite to
+		outfd = open(_outFile, O_CREAT | O_WRONLY | O_TRUNC);
+		// O_CREAT: if file doesn't exist create it
+		// O_TRUNC: if file exists delete what's in it
+		// O_WRONLY: write only
+		//printf("created a file\n");
+	}
+	else{
+		// if _outFile = 0, file descriptor remains the same
+		outfd = defaultout;
+	}
+	if (_inputFile){
+		// create file descriptor for infd
+		infd = open(_inputFile, O_RDONLY);
+		// O_RDONLY: read only
+	}
+	else{
+		// if _inputFile = 0, file descriptor remains the same
+		infd = defaultin;
+	}
+
+	// Start redirecting the right file descriptors to stdin, stdout
+	dup2(infd,0);
+	dup2(outfd,1);
+	dup2(defaulterr,2);
+
+	// Create child process
+	int pid;
+	pid = fork();
+
+	if (pid == -1){
+		perror("There is an error. Process can't be created\n");
+		exit(2);
+	}
+	if (pid == 0){
+		close(outfd);
+		close(infd);
+		close(defaultin);
+		close(defaultout);
+		close(defaulterr);
+		exit(0);
+	}
+
+	// dup2 takes first argument and puts it in second argument (opposite of dup)
+	// here, we return input to be stdin, output to be stdout, and error to be stderr
+
+	dup2(defaultin,0);
+	dup2(defaultout,1);
+	dup2(defaulterr,2);
+
+	// Close file descriptors that are not needed
+	close(defaultin);
+	close(defaultout);
+	close(defaulterr);
+	close(outfd);
+	close(infd);
+
+
 
 	// Clear to prepare for next command
 	clear();

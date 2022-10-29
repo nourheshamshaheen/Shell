@@ -64,8 +64,7 @@ piped_command:
 
 command_and_args:
 	command_word arg_list {
-		Command::_currentCommand.
-			insertSimpleCommand( Command::_currentSimpleCommand );
+		Command::_currentCommand.insertSimpleCommand( Command::_currentSimpleCommand );
 	}
 	;
 

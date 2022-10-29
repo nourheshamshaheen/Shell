@@ -326,7 +326,7 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 133 "shell.y"
+#line 132 "shell.y"
 
 void
 yyerror(const char * s)
@@ -1026,22 +1026,21 @@ break;
 case 10:
 #line 66 "shell.y"
 	{
-		Command::_currentCommand.
-			insertSimpleCommand( Command::_currentSimpleCommand );
+		Command::_currentCommand.insertSimpleCommand( Command::_currentSimpleCommand );
 	}
-#line 1033 "y.tab.c"
+#line 1032 "y.tab.c"
 break;
 case 13:
-#line 78 "shell.y"
+#line 77 "shell.y"
 	{
                printf("   Yacc: insert argument \"%s\"\n", yystack.l_mark[0].string_val);
 
 	       Command::_currentSimpleCommand->insertArgument( yystack.l_mark[0].string_val );\
 	}
-#line 1042 "y.tab.c"
+#line 1041 "y.tab.c"
 break;
 case 14:
-#line 86 "shell.y"
+#line 85 "shell.y"
 	{
 		/* Here, we implement our exit function*/
 			if (strcmp(yystack.l_mark[0].string_val, "exit") == 0) {
@@ -1053,46 +1052,46 @@ case 14:
 	       Command::_currentSimpleCommand = new SimpleCommand();
 	       Command::_currentSimpleCommand->insertArgument( yystack.l_mark[0].string_val );
 	}
-#line 1057 "y.tab.c"
+#line 1056 "y.tab.c"
 break;
 case 18:
-#line 107 "shell.y"
+#line 106 "shell.y"
 	{
 		printf("   Yacc: insert output \"%s\"\n", yystack.l_mark[0].string_val);
 		Command::_currentCommand._outFile = yystack.l_mark[0].string_val;
 		Command::_currentCommand._appendFlag = 0;
 
 	}
-#line 1067 "y.tab.c"
+#line 1066 "y.tab.c"
 break;
 case 19:
-#line 113 "shell.y"
+#line 112 "shell.y"
 	{
 		printf("   Yacc: insert output \"%s\"\n", yystack.l_mark[0].string_val);
 		Command::_currentCommand._outFile = yystack.l_mark[0].string_val;
 		Command::_currentCommand._appendFlag = 1;
 	}
-#line 1076 "y.tab.c"
+#line 1075 "y.tab.c"
 break;
 case 20:
-#line 118 "shell.y"
+#line 117 "shell.y"
 	{
 		printf("   Yacc: insert input \"%s\"\n", yystack.l_mark[0].string_val);
 		Command::_currentCommand._inputFile = yystack.l_mark[0].string_val;
 
 	}
-#line 1085 "y.tab.c"
+#line 1084 "y.tab.c"
 break;
 case 21:
-#line 123 "shell.y"
+#line 122 "shell.y"
 	{
 		printf("   Yacc: running in background.\n");
 		Command::_currentCommand._background = true;
 
 	}
-#line 1094 "y.tab.c"
+#line 1093 "y.tab.c"
 break;
-#line 1096 "y.tab.c"
+#line 1095 "y.tab.c"
     default:
         break;
     }

@@ -141,22 +141,31 @@ Command::execute()
 		return;
 	}
 	print();
-	// stem call creates a copy of a file descriptor.
-	// here, we take stdin(0) and put it in default in and so on.
+
+	/////////////////////////////////////////////////////
+	///////////// Handle File Redirection ///////////////
+	/////////////////////////////////////////////////////
+
+	// System call creates a copy of a file descriptor.
+	// Here, we take stdin(0) and put it in default in and so on.
+	
 	int defaultin = dup( 0 );
 	int defaultout = dup( 1 );
 	int defaulterr = dup( 2 );
-	int outfd = 0;
-	int infd = 0;
+	int outfd;
+	int infd;
+	
+	/*
 	printf("Here is defaultin %d\n",defaultin);
 	printf("Here is defaultout %d\n",defaultout);
 	printf("Here is defaulterr %d\n",defaulterr);
+	*/
 
-	// setting the right file descriptors to redirect to
+	// Setting the right file descriptors to redirect to
 
 	if (_outFile && _appendFlag){
 		// create file descriptor for outfd to append to
-		outfd = open(_outFile, O_CREAT | O_APPEND | O_WRONLY);
+		outfd = open(_outFile, O_CREAT | O_APPEND | O_WRONLY, 0666); // 0666 is to define set of permissions
 		// O_CREAT: if file doesn't exist create it
 		// O_APPEND: if file exists append to it
 		// O_WRONLY: write only
@@ -164,7 +173,7 @@ Command::execute()
 		}
 	else if(_outFile){
 		// create file descriptor for outfd to overwrite to
-		outfd = open(_outFile, O_CREAT | O_WRONLY | O_TRUNC);
+		outfd = open(_outFile, O_CREAT | O_WRONLY | O_TRUNC, 0666);
 		// O_CREAT: if file doesn't exist create it
 		// O_TRUNC: if file exists delete what's in it
 		// O_WRONLY: write only
@@ -176,7 +185,7 @@ Command::execute()
 	}
 	if (_inputFile){
 		// create file descriptor for infd
-		infd = open(_inputFile, O_RDONLY);
+		infd = open(_inputFile, O_RDONLY, 0666);
 		// O_RDONLY: read only
 	}
 	else{
@@ -185,9 +194,17 @@ Command::execute()
 	}
 
 	// Start redirecting the right file descriptors to stdin, stdout
+	
 	dup2(infd,0);
 	dup2(outfd,1);
 	dup2(defaulterr,2);
+
+
+	/////////////////////////////////////////////////////
+
+	/////////////////////////////////////////////////////
+	//////////// Handle Commands & Piping ///////////////
+	/////////////////////////////////////////////////////
 
 	int pid;
 	int n = sizeof(_simpleCommands)/sizeof(SimpleCommand*);
@@ -197,43 +214,43 @@ Command::execute()
 		if(i == n - 1){
 			pid = fork();
 			if (pid==0){
+
+				// We add an extra argument called NULL to the lists of argument
+				// This to make exevp work correcly
 				int num_args = _simpleCommands[i]->_numberOfArguments;
 				char ** args = _simpleCommands[i]->_arguments;
 				char ** full_command = (char **) realloc(args,(num_args + 1) * sizeof(char*));
 				full_command[num_args] = NULL;
 				execvp(full_command[0],full_command);
-				_exit(1);
+				exit(1);
 			}
 		}
 		else{ // Else if we are still in the middle of commands
-		// Create child process
-			pid = fork();
-			if (pid == -1){
-				perror("There is an error. Process can't be created\n");
-				exit(2);
-			}
-			if (pid == 0){
+			// Create child process
+			// pid = fork();
+			// if (pid == -1){
+			// 	perror("There is an error. Process can't be created\n");
+			// 	exit(2);
+			// }
+			// if (pid == 0){
 				
-				close(outfd);
-				close(infd);
-				close(defaultin);
-				close(defaultout);
-				close(defaulterr);
-				exit(0);
-			}
-
+			// 	close(outfd);
+			// 	close(infd);
+			// 	close(defaultin);
+			// 	close(defaultout);
+			// 	close(defaulterr);
+			// 	exit(0);
+			// }
 		}	
+	} //endfor
 
 
 
-
-	
-
-	}
-
-	// dup2 takes first argument and puts it in second argument (opposite of dup)
-	// here, we return input to be stdin, output to be stdout, and error to be stderr
-
+	/////////////////////////////////////////////////////
+	////////// Handle File Redirection Contd. ///////////
+	/////////////////////////////////////////////////////
+	// Dup2 takes first argument and puts it in second argument (opposite of dup)
+	// Here, we return input to be stdin, output to be stdout, and error to be stderr
 	dup2(defaultin,0);
 	dup2(defaultout,1);
 	dup2(defaulterr,2);
@@ -246,6 +263,14 @@ Command::execute()
 	close(infd);
 
 
+	////////////////////////////////////////////////////
+
+
+	// Wait for child process to terminate
+	if (_background == false) {
+		//wait for last command
+		waitpid(pid, NULL, 0);
+	}
 
 	// Clear to prepare for next command
 	clear();

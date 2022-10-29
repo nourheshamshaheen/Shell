@@ -28,6 +28,7 @@ extern "C"
 #define yylex yylex
 #include <stdio.h>
 #include "command.h"
+#include <signal.h>
 %}
 
 %%

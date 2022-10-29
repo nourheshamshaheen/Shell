@@ -17,6 +17,7 @@
 #include <string.h>
 #include <signal.h>
 #include <fcntl.h>
+#include <signal.h>
 
 #include "command.h"
 
@@ -134,7 +135,7 @@ Command::print()
 
 void
 Command::execute()
-{
+{  
 	// Don't do anything if there are no simple commands
 	if ( _numberOfSimpleCommands == 0 ) {
 		prompt();
@@ -313,9 +314,15 @@ SimpleCommand * Command::_currentSimpleCommand;
 
 int yyparse(void);
 
+void handler(int){
+	fprintf(stdout, "\nCTRL-C does nothing here! Type \"exit\" to exit!\n");
+	Command::_currentCommand.prompt();
+}
+
 int 
 main()
 {
+	signal(SIGINT, handler); 
 	Command::_currentCommand.prompt();
 	yyparse();
 	return 0;

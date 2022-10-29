@@ -21,6 +21,7 @@
 
 #include "command.h"
 
+int glob_sig;
 SimpleCommand::SimpleCommand()
 {
 	// Creat available space for 5 arguments
@@ -136,6 +137,7 @@ Command::print()
 void
 Command::execute()
 {  
+	glob_sig = 0;
 	// Don't do anything if there are no simple commands
 	if ( _numberOfSimpleCommands == 0 ) {
 		prompt();
@@ -239,6 +241,23 @@ Command::execute()
 		dup2(outfd, 1);
 		close(outfd);
 
+		// Handling the cd command before any process is forked 
+			if(strcmp(_simpleCommands[i]->_arguments[0],"cd")==0){
+				// Checking if dir is not specified
+				if(_simpleCommands[i]->_numberOfArguments == 1){
+					chdir("..");
+				}
+				else{
+					int change_dir = chdir(_simpleCommands[i]->_arguments[1]);
+					if (change_dir == -1){
+						printf("No such File or directory.\n");
+					}
+					// Lara debugging here
+					// printf("change_dir value: %d\n",change_dir);
+					// printf("argument is: %s\n",_simpleCommands[i]->_arguments[1]);
+				}
+			}
+
 		// Create child
 		pid = fork();
 
@@ -247,6 +266,7 @@ Command::execute()
 			exit(2);
 		}
 		if (pid == 0){
+			
 			// Close fds
 			close(outfd);
 			close(infd);
@@ -297,7 +317,13 @@ Command::execute()
 	clear();
 	
 	// Print new prompt
-	prompt();
+	if(glob_sig == 0){
+		prompt(); // only prompts if the signal hasn't been generated yet
+				// glob_sig gets assigned to 1 when CTRL + C signal is generated
+				// this is done to prevent prompting user twice in commands that need
+				// ctrl+c signal to terminate, such as "cat" command
+	}
+
 }
 
 // Shell implementation
@@ -314,14 +340,16 @@ SimpleCommand * Command::_currentSimpleCommand;
 
 int yyparse(void);
 
-void handler(int){
+void handler(int i){
 	fprintf(stdout, "\nCTRL-C does nothing here! Type \"exit\" to exit!\n");
 	Command::_currentCommand.prompt();
+	glob_sig = 1;
 }
 
 int 
 main()
 {
+	glob_sig = 0;
 	signal(SIGINT, handler); 
 	Command::_currentCommand.prompt();
 	yyparse();

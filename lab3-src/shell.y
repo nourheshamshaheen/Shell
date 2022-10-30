@@ -29,6 +29,8 @@ extern "C"
 #include <stdio.h>
 #include "command.h"
 #include <signal.h>
+#include <glob.h>
+#include <string.h>
 %}
 
 %%
@@ -76,8 +78,41 @@ arg_list:
 
 argument:
 	WORD {
-               printf("   Yacc: insert argument \"%s\"\n", $1);
+		// Nour's code
+		// char * str = $1;
+		// int i= 0;
+		// while(str[i])
+		// {
+		// 	if(strcmp(str[i],"*")==0)
+		// 	{
+		// 		glob_t* pglob; 
+		// 		glob_t glob_results;
+		// 		char **p;
+		// 		printf(glob("*",GLOB_NOCHECK,0,&glob_results));
+		// 		// p_glob is a struct
+		// 		// for each matching pattern, insert argument
+		// 		//Command::_currentSimpleCommand->insertArgument();
+		// 	}
+		// 	else if(strcmp(str[i],"?")==0)
 
+		// 	{
+				
+		// 		// for each matching pattern, insert argument
+		// 			//Command::_currentSimpleCommand->insertArgument();
+		// 	}
+		// 	i++;
+		// }
+		// Lara's code
+		char * str = (char *) malloc( sizeof($1) * sizeof( char ) );
+		str = $1;
+		// printf("	This is str %s\n",str);
+		if(strstr(str,"*")!=NULL){
+			printf("\t******************\n\tFOUND A WILDCARD [*]\n\t******************\n");
+		}
+		else if(strstr(str,"?")!=NULL){
+			printf("\t******************\n\tFOUND A WILDCARD [?]\n\t******************\n");
+		}
+           printf("   Yacc: insert argument \"%s\"\n", $1);
 	       Command::_currentSimpleCommand->insertArgument( $1 );\
 	}
 	;

@@ -101,6 +101,11 @@ argument:
 				Command::_currentSimpleCommand->insertArgument(glob_out.gl_pathv[i]);
 			}
 		}
+		else
+		{
+			printf("   Yacc: insert argument \"%s\"\n", $1);
+			Command::_currentSimpleCommand->insertArgument( $1 );
+		}
 	}
 	;
 

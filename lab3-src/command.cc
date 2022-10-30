@@ -18,8 +18,9 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <signal.h>
-
+#include <syslog.h>
 #include "command.h"
+
 
 int glob_sig;
 SimpleCommand::SimpleCommand()
@@ -134,6 +135,13 @@ Command::print()
 	
 }
 
+
+void proc_exit(int)
+{
+	FILE *f;
+	f = fopen("file.log", "a"); 
+	fprintf(f, "%s", "Process Terminated.\n");
+}
 void
 Command::execute()
 {  
@@ -257,6 +265,10 @@ Command::execute()
 					// printf("argument is: %s\n",_simpleCommands[i]->_arguments[1]);
 				}
 			}
+		// SIGCHLD catchers are usually set up as part of process initialization. 
+		// They must be set before a child process is forked. 
+		// A typical SIGCHLD handler retrieves the child process's exit status.
+		signal (SIGCHLD, proc_exit);
 
 		// Create child
 		pid = fork();
@@ -282,6 +294,7 @@ Command::execute()
 			full_command[num_args] = NULL;
 			execvp(full_command[0],full_command);
 			exit(1);
+
 		}
 	} //endfor
 

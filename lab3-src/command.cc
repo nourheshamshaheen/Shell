@@ -62,6 +62,7 @@ Command::Command()
 	_errFile = 0;
 	_background = 0;
 	_appendFlag = 0;
+	_appendFlagErr = 0;
 }
 
 void
@@ -169,6 +170,7 @@ Command::execute()
 	int defaulterr = dup( 2 );
 	int outfd;
 	int infd;
+	int errfd;
 	int org_outfd;
 
 	// Nour is debugging here
@@ -180,7 +182,7 @@ Command::execute()
 	*/
 
 	// Setting the right file descriptors to redirect to
-
+	// OUTPUT
 	if (_outFile && _appendFlag){
 		// create file descriptor for outfd to append to
 		outfd = open(_outFile, O_CREAT | O_APPEND | O_WRONLY, 0666); // 0666 is to define set of permissions
@@ -201,6 +203,19 @@ Command::execute()
 		// if _outFile = 0, file descriptor remains the same
 		outfd = defaultout;
 	}
+	// ERROR
+	if (_errFile && _appendFlagErr){
+		errfd = open(_errFile, O_CREAT | O_APPEND | O_WRONLY, 0666); // 0666 is to define set of permissions
+	}
+	else if(_errFile){
+		// create file descriptor for errfd to overwrite to
+		errfd = open(_errFile, O_CREAT | O_WRONLY | O_TRUNC, 0666);
+	}
+	else{
+		// if _errFile = 0, file descriptor remains the same
+		errfd = defaulterr;
+	}
+	// INPUT
 	if (_inputFile){
 		// create file descriptor for infd
 		infd = open(_inputFile, O_RDONLY, 0666);
@@ -213,6 +228,9 @@ Command::execute()
 
 	org_outfd = outfd;
 
+
+	dup2(errfd, 2);
+	close(errfd);
 	/////////////////////////////////////////////////////
 
 	/////////////////////////////////////////////////////
@@ -269,6 +287,7 @@ Command::execute()
 					// printf("argument is: %s\n",_simpleCommands[i]->_arguments[1]);
 				}
 			}
+
 		// SIGCHLD catchers are usually set up as part of process initialization. 
 		// They must be set before a child process is forked. 
 		// A typical SIGCHLD handler retrieves the child process's exit status.

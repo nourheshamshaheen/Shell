@@ -33,9 +33,16 @@
 ">>" 	{
 		return APPEND;
 	}
+">&" 	{
+		return GREATAMPS;
+	}
+">>&" 	{
+		return APPENDAMPS;
+	}
 "|" 	{
 		return PIPE;
 	}
+
 "&" 	{
 		return AMPS;
 }

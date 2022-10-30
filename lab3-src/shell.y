@@ -159,7 +159,17 @@ iomodifier_opt:
 		printf("   Yacc: running in background.\n");
 		Command::_currentCommand._background = true;
 
+	}	
+	| APPENDAMPS WORD {
+		printf("   Yacc: insert error \"%s\"\n", $2);
+		Command::_currentCommand._errFile = $2;
+		Command::_currentCommand._appendFlagErr = 1;
 	}
+	| GREATAMPS WORD {
+		printf("   Yacc: insert error \"%s\"\n", $2);
+		Command::_currentCommand._errFile = $2;
+
+	} 
 	|
 	;
 

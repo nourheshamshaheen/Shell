@@ -13,7 +13,7 @@
 
 %token	<string_val> WORD
 
-%token 	NOTOKEN GREAT NEWLINE LESS AMPS APPEND PIPE
+%token 	NOTOKEN GREAT NEWLINE LESS AMPS APPEND PIPE GREATAMPS APPENDAMPS CHAR
 
 %union	{
 		char   *string_val;
@@ -76,6 +76,12 @@ arg_list:
 	| /* can be empty */
 	;
 
+// input:
+// 	WORD
+// 	| CHAR 
+// 	|
+// 	;
+
 argument:
 	WORD {
 		// Nour's code
@@ -115,6 +121,19 @@ argument:
            printf("   Yacc: insert argument \"%s\"\n", $1);
 	       Command::_currentSimpleCommand->insertArgument( $1 );\
 	}
+	| CHAR {
+		// char* str = "*";
+		// // printf("	This is str %s\n",str);
+		// if(strstr(str,"*")!=NULL){
+		// 	printf("\t******************\n\tFOUND A WILDCARD [*]\n\t******************\n");
+		// }
+		// else if(strstr(str,"?")!=NULL){
+		// 	printf("\t******************\n\tFOUND A WILDCARD [?]\n\t******************\n");
+		// }
+           printf("   Yacc: insert argument \"%s\"\n", "*");
+	       //Command::_currentSimpleCommand->insertArgument(NULL);\
+	}
+	|
 	;
 
 command_word:

@@ -362,7 +362,7 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[17] =
     {   0,
-        0,    0,   14,   11,    2,    1,    9,   10,    4,    3,
+        0,    0,   14,   10,    2,    1,    2,    9,    4,    3,
         8,   12,    6,    5,    7,    0
     } ;
 
@@ -371,8 +371,8 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    1,    1,    1,    1,    4,    1,    1,
-        1,    5,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    4,    1,    1,    1,    1,    1,    5,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    6,
         1,    7,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -405,8 +405,8 @@ static const YY_CHAR yy_meta[9] =
 
 static const flex_int16_t yy_base[17] =
     {   0,
-        0,    0,   14,   12,   15,   15,   15,   15,   15,    5,
-       15,   10,   15,    6,   15,   15
+        0,    0,   14,   12,   15,   15,   15,   15,   15,    4,
+       15,   11,   15,    5,   15,   15
     } ;
 
 static const flex_int16_t yy_def[17] =
@@ -418,14 +418,14 @@ static const flex_int16_t yy_def[17] =
 static const flex_int16_t yy_nxt[24] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   13,   15,
-       12,   14,   12,   16,    3,   16,   16,   16,   16,   16,
+       14,   12,   12,   16,    3,   16,   16,   16,   16,   16,
        16,   16,   16
     } ;
 
 static const flex_int16_t yy_chk[24] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,   10,   14,
-       12,   10,    4,    3,   16,   16,   16,   16,   16,   16,
+       10,   12,    4,    3,   16,   16,   16,   16,   16,   16,
        16,   16,   16
     } ;
 
@@ -799,16 +799,17 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case 10:
+/* rule 10 can match eol */
 YY_RULE_SETUP
-#line 49 "shell.l"
+#line 50 "shell.l"
 {
-		/* For wildcarding */
-		return CHAR;
-	}
+		yylval.string_val = strdup(yytext);
+		return WORD;
+    }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 53 "shell.l"
+#line 55 "shell.l"
 {
 		/* Invalid character in input */
 		return NOTOKEN;
@@ -816,7 +817,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 58 "shell.l"
+#line 60 "shell.l"
 {
 		/* Assume that file names have only alpha chars */
 		yylval.string_val = strdup(yytext);
@@ -825,10 +826,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 65 "shell.l"
+#line 67 "shell.l"
 ECHO;
 	YY_BREAK
-#line 832 "lex.yy.c"
+#line 833 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1833,7 +1834,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 65 "shell.l"
+#line 67 "shell.l"
 
 	
 

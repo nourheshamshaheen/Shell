@@ -13,7 +13,7 @@
 
 %token	<string_val> WORD
 
-%token 	NOTOKEN GREAT NEWLINE LESS AMPS APPEND PIPE GREATAMPS APPENDAMPS CHAR
+%token 	NOTOKEN GREAT NEWLINE LESS AMPS APPEND PIPE GREATAMPS APPENDAMPS
 
 %union	{
 		char   *string_val;
@@ -54,9 +54,9 @@ simple_command:
 	}
 	/* Here, we wanted that each time we pressed enter, a new prompt got printed */
 	| NEWLINE
-	// {
-	// 	Command::_currentCommand.prompt();
-	// }
+	{
+		Command::_currentCommand.prompt();
+	}
 	| error NEWLINE { yyerrok; }
 	;
 
@@ -84,56 +84,24 @@ arg_list:
 
 argument:
 	WORD {
-		// Nour's code
-		// char * str = $1;
-		// int i= 0;
-		// while(str[i])
-		// {
-		// 	if(strcmp(str[i],"*")==0)
-		// 	{
-		// 		glob_t* pglob; 
-		// 		glob_t glob_results;
-		// 		char **p;
-		// 		printf(glob("*",GLOB_NOCHECK,0,&glob_results));
-		// 		// p_glob is a struct
-		// 		// for each matching pattern, insert argument
-		// 		//Command::_currentSimpleCommand->insertArgument();
-		// 	}
-		// 	else if(strcmp(str[i],"?")==0)
-
-		// 	{
-				
-		// 		// for each matching pattern, insert argument
-		// 			//Command::_currentSimpleCommand->insertArgument();
-		// 	}
-		// 	i++;
-		// }
-		// Lara's code
 		char * str = (char *) malloc( sizeof($1) * sizeof( char ) );
 		str = $1;
-		// printf("	This is str %s\n",str);
-		if(strstr(str,"*")!=NULL){
-			printf("\t******************\n\tFOUND A WILDCARD [*]\n\t******************\n");
+		printf("String is %s", str);
+		if(strstr(str,"*")!=NULL || strstr(str,"?")!=NULL){
+			glob_t glob_out; 
+			if (glob(str, GLOB_ERR, NULL, &glob_out) != 0)
+			{
+				perror("ERROR IN PATTERN MATCHING. EXITING...");
+				exit(2);
+			}
+			// Loop over found directories and files
+			for(size_t i = 0; i < glob_out.gl_pathc; i++)
+			{
+				printf("   Yacc: insert argument \"%s\"\n", glob_out.gl_pathv[i]);
+				Command::_currentSimpleCommand->insertArgument(glob_out.gl_pathv[i]);
+			}
 		}
-		else if(strstr(str,"?")!=NULL){
-			printf("\t******************\n\tFOUND A WILDCARD [?]\n\t******************\n");
-		}
-           printf("   Yacc: insert argument \"%s\"\n", $1);
-	       Command::_currentSimpleCommand->insertArgument( $1 );\
 	}
-	| CHAR {
-		// char* str = "*";
-		// // printf("	This is str %s\n",str);
-		// if(strstr(str,"*")!=NULL){
-		// 	printf("\t******************\n\tFOUND A WILDCARD [*]\n\t******************\n");
-		// }
-		// else if(strstr(str,"?")!=NULL){
-		// 	printf("\t******************\n\tFOUND A WILDCARD [?]\n\t******************\n");
-		// }
-           printf("   Yacc: insert argument \"%s\"\n", "*");
-	       //Command::_currentSimpleCommand->insertArgument(NULL);\
-	}
-	|
 	;
 
 command_word:

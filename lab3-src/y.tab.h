@@ -8,7 +8,6 @@
 #define PIPE 264
 #define GREATAMPS 265
 #define APPENDAMPS 266
-#define CHAR 267
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1

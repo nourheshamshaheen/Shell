@@ -86,7 +86,7 @@ argument:
 	WORD {
 		char * str = (char *) malloc( sizeof($1) * sizeof( char ) );
 		str = $1;
-		printf("String is %s", str);
+		// printf("String is %s", str);
 		if(strstr(str,"*")!=NULL || strstr(str,"?")!=NULL){
 			glob_t glob_out; 
 			if (glob(str, GLOB_ERR, NULL, &glob_out) != 0)

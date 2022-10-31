@@ -277,7 +277,10 @@ Command::execute()
 				if(_simpleCommands[i]->_numberOfArguments == 1){
 					chdir(getenv("HOME"));
 				}
-				else{
+				else if ( strcmp(_simpleCommands[i]->_arguments[1],"~") == 0 ){
+					chdir(getenv("HOME"));
+				}
+				else{ 
 					int change_dir = chdir(_simpleCommands[i]->_arguments[1]);
 					if (change_dir == -1){
 						printf("No such File or directory.\n");
